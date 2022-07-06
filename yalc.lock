@@ -1,0 +1,9 @@
+{
+  "version": "v1",
+  "packages": {
+    "browser-search": {
+      "signature": "542c0ed7c2f4be5f5b8cbca2ffe33db6",
+      "file": true
+    }
+  }
+}
