@@ -1,10 +1,16 @@
 {
-  "name": "react-browser-search",
+  "name": "@browser-search/react-browser-search",
+  "author": "youldali",
   "version": "1.0.0",
   "description": "React hooks for browser-search library",
   "main": "dist/index.js",
-  "repository": "https://github.com/youldali/browser-search/",
+  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
+  "repository": "youldali/react-browser-search",
   "license": "MIT",
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "memoizee": "^0.4.15",
     "object-hash": "^3.0.0",
@@ -30,6 +36,7 @@
     "browser-search": "*"
   },
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "yalc:update": "yarn build:dev && yalc publish && yalc push",
     "test": "jest",
     "build": "webpack --mode=production --node-env=production",
