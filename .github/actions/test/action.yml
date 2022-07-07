@@ -1,4 +1,4 @@
-name: 'Browser Search build'
+name: 'React Browser Search test'
 description: 'tests'
 
 runs:
@@ -38,7 +38,8 @@ runs:
 
       - name: Typecheck
         run: yarn typecheck
-        
+        shell: bash
+
       - name: test
         run: yarn run test
         shell: bash
