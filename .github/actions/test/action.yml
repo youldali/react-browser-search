@@ -1,45 +1,13 @@
-name: 'React Browser Search test'
-description: 'tests'
+name: 'Browser Search build'
+description: 'checks, tests, builds'
 
 runs:
   using: "composite"
   steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Nodejs
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-        shell: bash
-
-      - uses: actions/cache@v3
-        id: yarn-cache
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            node_modules
-          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-yarn
-
-      - name: Install dependencies
-        run: |
-          if ${{ steps.yarn-cache.outputs.cache-hit }} = 'true'
-          then
-            echo "Cache hit - skipping dependency installation"
-          else
-            yarn install --frozen-lockfile
-          fi
-        shell: bash
-
       - name: Typecheck
         run: yarn typecheck
         shell: bash
-
+        
       - name: test
         run: yarn run test
         shell: bash

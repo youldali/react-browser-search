@@ -1,4 +1,4 @@
-import * as BS from 'browser-search';
+import * as BS from '@browser-search/browser-search';
 import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import { Just, Maybe, Nothing } from 'purify-ts/Maybe';
 import { isSafari } from 'react-device-detect';

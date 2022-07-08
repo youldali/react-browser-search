@@ -1,4 +1,4 @@
-import { SimplifiedIndexConfig, StoreId } from 'browser-search';
+import { SimplifiedIndexConfig, StoreId } from '@browser-search/browser-search';
 import { Reducer, useCallback, useContext, useReducer } from 'react';
 import { Just, Maybe, Nothing } from 'purify-ts/Maybe';
 

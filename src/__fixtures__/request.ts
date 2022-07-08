@@ -1,4 +1,4 @@
-import { Request } from 'browser-search';
+import { Request } from '@browser-search/browser-search';
 
 import { createFixture } from './createFixture';
 

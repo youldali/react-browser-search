@@ -1,4 +1,4 @@
-import * as BS from 'browser-search';
+import * as BS from '@browser-search/browser-search';
 
 import { IndexRequest } from '../indexRequest';
 

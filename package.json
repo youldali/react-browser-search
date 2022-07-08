@@ -14,6 +14,7 @@
   "dependencies": {
     "memoizee": "^0.4.15",
     "object-hash": "^3.0.0",
+    "purify-ts": "^1.2.2",
     "ramda": "^0.28.0",
     "react-device-detect": "^2.2.2"
   },
@@ -33,7 +34,7 @@
     "webpack-cli": "^4.9.2"
   },
   "peerDependencies": {
-    "browser-search": "*"
+    "@browser-search/browser-search": "1.0.1-beta.3"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

@@ -1,5 +1,5 @@
 import hash from 'object-hash';
-import { Request } from 'browser-search';
+import { Request } from '@browser-search/browser-search';
 import memoize from 'memoizee';
 
 export type AnyRequest = Request<any, any>;

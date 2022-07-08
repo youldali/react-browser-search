@@ -1,4 +1,4 @@
-import * as BS from 'browser-search';
+import * as BS from '@browser-search/browser-search';
 
 export type Listener = <Trigger extends 'store-mutation' >({trigger}: {trigger: Trigger}) => void; 
 export type StoreListeners = Map<BS.StoreId, Listener[]>;

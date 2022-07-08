@@ -1,4 +1,4 @@
-import { StoreId } from 'browser-search';
+import { StoreId } from '@browser-search/browser-search';
 import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import { Just, Maybe, Nothing } from 'purify-ts/Maybe';
 

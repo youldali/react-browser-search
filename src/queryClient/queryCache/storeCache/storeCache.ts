@@ -1,4 +1,4 @@
-import * as BS from 'browser-search';
+import * as BS from '@browser-search/browser-search';
 import { Just, Maybe, Nothing } from 'purify-ts/Maybe';
 
 type StoreCache<CacheKey, CacheValue> = Map<CacheKey, CacheValue>;

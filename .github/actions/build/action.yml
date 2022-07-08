@@ -1,0 +1,8 @@
+name: 'Semantic Release'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build
+      run: yarn run build
+      shell: bash

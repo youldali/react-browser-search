@@ -37,7 +37,7 @@ const config = {
     extensions: [".tsx", ".ts", ".js"],
   },
   externals: {
-    "browser-search": 'browser-search',
+    "browser-search": '@browser-search/browser-search',
     "react": 'react',
   },
 };

@@ -1,4 +1,4 @@
-import { Request, SearchResponse, StoreId } from 'browser-search';
+import { Request, SearchResponse, StoreId } from '@browser-search/browser-search';
 
 import { buildQueryCache } from '../queryCache';
 

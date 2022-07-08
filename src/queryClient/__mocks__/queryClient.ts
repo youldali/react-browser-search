@@ -1,4 +1,4 @@
-import { AbortSearch, Request, SearchResponse, StoreId } from 'browser-search';
+import { AbortSearch, Request, SearchResponse, StoreId } from '@browser-search/browser-search';
 
 import { buildIndexValuesCache, buildQueryCache } from '../queryCache';
 import { buildSubscriber } from '../subscriber';

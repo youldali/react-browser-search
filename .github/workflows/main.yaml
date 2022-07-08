@@ -12,7 +12,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: test
+      - name: installs
+        uses: ./.github/actions/install
+
+      - name: tests
         uses: ./.github/actions/test
 
   publish:
@@ -21,8 +24,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        
+      - name: installs
+        uses: ./.github/actions/install
 
-      - name: release
+      - name: builds
+        uses: ./.github/actions/build
+
+      - name: releases
         uses: ./.github/actions/release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

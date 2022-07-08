@@ -256,9 +256,9 @@
     "@babel/helper-plugin-utils" "^7.16.7"
 
 "@babel/runtime@^7.15.4":
-  version "7.18.3"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.18.3.tgz#c7b654b57f6f63cf7f8b418ac9ca04408c4579f4"
-  integrity sha512-38Y8f7YUhce/K7RMwTp7m0uCumpv9hZkitCbBClqQIow1qSbCvGkcegKOXpEWCQLfWmevgRiWokZ1GkpfhbZug==
+  version "7.18.6"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.18.6.tgz#6a1ef59f838debd670421f8c7f2cbb8da9751580"
+  integrity sha512-t9wi7/AW6XtKahAe20Yw0/mMljKq0B1r2fPdvaAdV/KPDZewFXdaaa6K7lxmZBZ8FBNpCiAT6iHPmd6QO9bKfQ==
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -306,6 +306,19 @@
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
+
+"@browser-search/browser-search@1.0.1-beta.3":
+  version "1.0.1-beta.3"
+  resolved "https://registry.yarnpkg.com/@browser-search/browser-search/-/browser-search-1.0.1-beta.3.tgz#41e91d05056d55375b800376d8226472fe2f93fb"
+  integrity sha512-ZCz41G5aNvU+7T4nN9wwzyEZCldqzyxRvWYzdqQrZAePtRmu8ndMkzSejZEP84JbtTItz1fhJ8rohCPkKe5Hcg==
+  dependencies:
+    "@types/object-hash" "^2.1.0"
+    "@types/ramda" "^0.27.39"
+    loglevel "^1.7.0"
+    object-hash "^2.2.0"
+    purify-ts "^0.16"
+    ramda "^0.27.1"
+    yup "^0.32.9"
 
 "@discoveryjs/json-ext@^0.5.0":
   version "0.5.7"
@@ -652,7 +665,7 @@
     jest-matcher-utils "^27.0.0"
     pretty-format "^27.0.0"
 
-"@types/json-schema@*", "@types/json-schema@^7.0.8":
+"@types/json-schema@*", "@types/json-schema@7.0.11", "@types/json-schema@^7.0.8":
   version "7.0.11"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"
   integrity sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==
@@ -1223,17 +1236,6 @@ browser-process-hrtime@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/browser-process-hrtime/-/browser-process-hrtime-1.0.0.tgz#3c9b4b7d782c8121e56f10106d84c0d0ffc94626"
   integrity sha512-9o5UecI3GhkpM6DrXr69PblIuWxPKk9Y0jHBRhdocZ2y7YECBFCsHm79Pr3OyR2AvjhDkabFJaDJMYRazHgsow==
-
-"browser-search@file:.yalc/browser-search":
-  version "0.1.0"
-  dependencies:
-    "@types/object-hash" "^2.1.0"
-    "@types/ramda" "^0.27.39"
-    loglevel "^1.7.0"
-    object-hash "^2.2.0"
-    purify-ts "^0.16"
-    ramda "^0.27.1"
-    yup "^0.32.9"
 
 browserslist@^4.14.5, browserslist@^4.17.5:
   version "4.20.2"
@@ -3934,6 +3936,13 @@ purify-ts@^0.16:
   dependencies:
     "@types/json-schema" "7.0.7"
 
+purify-ts@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/purify-ts/-/purify-ts-1.2.2.tgz#f4a5e8942458b3cde0d16ff964826942ff6b7c16"
+  integrity sha512-BzoowRU2QoDGBYu3CkLtjXLzfB5zz4E2sdXE+KfgP77MOW6lWv6UJ3/VWiwmnHfVXlUdOtHq7ZVUkhQERSunGw==
+  dependencies:
+    "@types/json-schema" "7.0.11"
+
 ramda@^0.27.1:
   version "0.27.2"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.27.2.tgz#84463226f7f36dc33592f6f4ed6374c48306c3f1"
@@ -4707,7 +4716,7 @@ to-regex@^3.0.1, to-regex@^3.0.2:
 toposort@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/toposort/-/toposort-2.0.2.tgz#ae21768175d1559d48bef35420b2f4962f09c330"
-  integrity sha1-riF2gXXRVZ1IvvNUILL0li8JwzA=
+  integrity sha512-0a5EOkAUp8D4moMi2W8ZF8jcga7BgZd91O/yabJCFY8az+XSzeGyTKs0Aoo897iV1Nj6guFq8orWDS96z91oGg==
 
 tough-cookie@^4.0.0:
   version "4.0.0"
