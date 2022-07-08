@@ -5,7 +5,7 @@ runs:
   using: "composite"
   steps:
       - name: Installs browser-search
-        run: yarn add @browser-search/browser-search@1.0.1-beta.3 react@^17 react-dom@^17
+        run: yarn add @browser-search/browser-search@1.0.1-beta.3 react@^17
         shell: bash
 
       - name: Typecheck
