@@ -6,6 +6,7 @@ runs:
   steps:
       - name: Installs browser-search
         run: yarn add 1.0.1-beta.3
+        shell: bash
 
       - name: Typecheck
         run: yarn typecheck
