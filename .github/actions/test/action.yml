@@ -4,6 +4,9 @@ description: 'checks, tests, builds'
 runs:
   using: "composite"
   steps:
+      - name: Installs browser-search
+        run: yarn add 1.0.1-beta.3
+
       - name: Typecheck
         run: yarn typecheck
         shell: bash
