@@ -5,36 +5,31 @@ import { buildStoreCache } from './storeCache';
 
 type IndexId = string;
 
-type Request = {
-  storeId: string;
-  indexId: IndexId;
-}
-
 export const buildIndexValuesCache = () => {
   const responseCache = buildStoreCache();
   const pendingQueryCache = buildStoreCache();
 
-  const queryCache = <Value extends IDBValidKey>({storeId, indexId}: Request): Maybe<Promise<Value[]>> => {
+  const queryCache = <Value extends IDBValidKey>({storeId, field}: BS.GetIndexValuesRequest): Maybe<Promise<Value[]>> => {
     return (
       responseCache
-        .queryCache<IndexId, Value[]>(storeId, indexId)
+        .queryCache<IndexId, Value[]>(storeId, field)
         .map(response => Promise.resolve(response))
-        .alt(pendingQueryCache.queryCache<IndexId, Promise<Value[]>>(storeId, indexId))
+        .alt(pendingQueryCache.queryCache<IndexId, Promise<Value[]>>(storeId, field))
     )
   }
 
-  const addQueryToCache = <Value extends IDBValidKey>({storeId, indexId}: Request, query: Promise<Value[]>): void => {
-    pendingQueryCache.addValueToStoreCache(storeId, indexId, query);
+  const addQueryToCache = <Value extends IDBValidKey>({storeId, field}: BS.GetIndexValuesRequest, query: Promise<Value[]>): void => {
+    pendingQueryCache.addValueToStoreCache(storeId, field, query);
 
     query
       .then(queryResponse => {
         // if not in the cache, it means cache has been emptied in the meantime (because of store mutation) so it's obsolete
-        if(pendingQueryCache.queryCache(storeId, indexId)) {
-          responseCache.addValueToStoreCache(storeId, indexId, queryResponse);
+        if(pendingQueryCache.queryCache(storeId, field)) {
+          responseCache.addValueToStoreCache(storeId, field, queryResponse);
         }
       })
       .finally(() => {
-        pendingQueryCache.deleteKeyFromStore(storeId, indexId)
+        pendingQueryCache.deleteKeyFromStore(storeId, field)
       })
   }
 

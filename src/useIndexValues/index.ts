@@ -1,5 +1,5 @@
 export { useIndexValues } from './useIndexValues';
-export type { ResponsePayload as UseIndexValuesResponsePayload, RequestPayload as UseIndexValuesRequestPayload} from './useIndexValues';
+export type { ResponsePayload as UseIndexValuesResponsePayload} from './useIndexValues';
 export type { 
   QueryState as UseIndexValuesQueryState, 
   IdleState as UseIndexValuesIdleState, 

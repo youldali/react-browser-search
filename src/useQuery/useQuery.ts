@@ -5,13 +5,13 @@ import { isSafari } from 'react-device-detect';
 
 import { BrowserSearchContext } from '../provider';
 import * as GenericQueryState from '../queryState';
-import { areRequestsEqual } from '../request';
+import { areRequestsEqual } from '../queryRequest';
 import { buildStateMachine, StateTransition } from '../stateMachine';
 
-type RequestPayload<Document, TFilterId extends string> = BS.Request<Document, TFilterId>
+type RequestPayload<Document, TFilterId extends string> = BS.QueryRequest<Document, TFilterId>
 type RunQueryTrigger = 'store-mutation' | 'request-change';
 
-export type SearchResponse<Document, TFilterId extends string = string> = Omit<BS.SearchResponse<Document, TFilterId>, '_cacheStatus_'>;
+export type QueryResponse<Document, TFilterId extends string = string> = Omit<BS.QueryResponse<Document, TFilterId>, '_cacheStatus_'>;
 
 export interface IdleState extends GenericQueryState.IdleState {
 }
@@ -21,10 +21,10 @@ export interface LoadingQueryState<Document, TFilterId extends string = string> 
   trigger: RunQueryTrigger;
 }
 
-export interface SuccessQueryState<Document, TFilterId extends string = string> extends GenericQueryState.SuccessQueryState<RequestPayload<Document, TFilterId>, SearchResponse<Document, TFilterId>> {
+export interface SuccessQueryState<Document, TFilterId extends string = string> extends GenericQueryState.SuccessQueryState<RequestPayload<Document, TFilterId>, QueryResponse<Document, TFilterId>> {
 }
 
-export interface StaleQueryState<Document, TFilterId extends string = string> extends GenericQueryState.StaleQueryState<RequestPayload<Document, TFilterId>, SearchResponse<Document, TFilterId>> {
+export interface StaleQueryState<Document, TFilterId extends string = string> extends GenericQueryState.StaleQueryState<RequestPayload<Document, TFilterId>, QueryResponse<Document, TFilterId>> {
   abort: BS.AbortSearch;
   trigger: RunQueryTrigger;
   areStatsStale: boolean;
@@ -35,9 +35,9 @@ export interface ErrorQueryState<Document, TFilterId extends string = string> ex
 export type QueryState<Document, TFilterId extends string = string> = IdleState | LoadingQueryState<Document, TFilterId> | SuccessQueryState<Document, TFilterId> | StaleQueryState<Document, TFilterId> | ErrorQueryState<Document, TFilterId>;
 
 
-export type SearchStartedAction<Document, TFilterId extends string = string> = { type: 'searchStarted'; request: BS.Request<Document, TFilterId>; abort: BS.AbortSearch, trigger: RunQueryTrigger}
-export type SearchCompletedAction<Document, TFilterId extends string = string> = { type: 'searchCompleted'; response: BS.SearchResponse<Document, TFilterId>; request: BS.Request<Document, TFilterId>;}
-export type SearchFailedAction<Document, TFilterId extends string = string> = { type: 'searchFailed'; request: BS.Request<Document, TFilterId>; error: Error};
+export type SearchStartedAction<Document, TFilterId extends string = string> = { type: 'searchStarted'; request: BS.QueryRequest<Document, TFilterId>; abort: BS.AbortSearch, trigger: RunQueryTrigger}
+export type SearchCompletedAction<Document, TFilterId extends string = string> = { type: 'searchCompleted'; response: BS.QueryResponse<Document, TFilterId>; request: BS.QueryRequest<Document, TFilterId>;}
+export type SearchFailedAction<Document, TFilterId extends string = string> = { type: 'searchFailed'; request: BS.QueryRequest<Document, TFilterId>; error: Error};
 
 export type Action<Document, TFilterId extends string = string> =
   | SearchStartedAction<Document, TFilterId>
@@ -168,13 +168,13 @@ const fromErrorToLoading = <Document, TFilterId extends string = string>(state: 
   }) : Nothing
 )
 
-const getAreStatsStale = <Document, TFilterId extends string>(previousRequest: BS.Request<Document, TFilterId>, searchStartedAction: SearchStartedAction<Document, TFilterId>) => (
+const getAreStatsStale = <Document, TFilterId extends string>(previousRequest: BS.QueryRequest<Document, TFilterId>, searchStartedAction: SearchStartedAction<Document, TFilterId>) => (
   previousRequest.filtersApplied !== searchStartedAction.request.filtersApplied || 
   previousRequest.filterConfig !== searchStartedAction.request.filterConfig ||
   searchStartedAction.trigger === 'store-mutation'
 )
 
-const getShouldAbortRequest = <Document, TFilterId extends string>(previousRequest: BS.Request<Document, TFilterId>, searchStartedAction: SearchStartedAction<Document, TFilterId>) => (
+const getShouldAbortRequest = <Document, TFilterId extends string>(previousRequest: BS.QueryRequest<Document, TFilterId>, searchStartedAction: SearchStartedAction<Document, TFilterId>) => (
   !isSafari && (!areRequestsEqual(previousRequest, searchStartedAction.request) || 
   searchStartedAction.trigger === 'store-mutation')
 )
@@ -184,7 +184,7 @@ export const buildReducer = <Document, TFilterId extends string = string>(): Que
   return buildStateMachine(stateTransitions);
 }
 
-export const useQuery = <Document, TFilterId extends string = string>(request: BS.Request<Document, TFilterId>): QueryState<Document, TFilterId> => {
+export const useQuery = <Document, TFilterId extends string = string>(request: BS.QueryRequest<Document, TFilterId>): QueryState<Document, TFilterId> => {
   const queryClient = useContext(BrowserSearchContext);
   const [state, dispatch] = useReducer<QueryReducer<Document, TFilterId>>(
     buildReducer<Document, TFilterId>(),

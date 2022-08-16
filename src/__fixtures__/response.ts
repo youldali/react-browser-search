@@ -1,12 +1,12 @@
-import { SearchResponse } from '@browser-search/browser-search';
+import { QueryResponse } from '@browser-search/browser-search';
 
 import { createFixture } from './createFixture';
 
-const response: SearchResponse<any, string> = {
+const response: QueryResponse<any, string> = {
   documents: [],
   stats: {},
   numberOfDocuments: 0,
   _cacheStatus_: 'none',
 };
 
-export const getResponseFixture = <Document>(overrides?: Partial<SearchResponse<Document>>) => createFixture<SearchResponse<Document>>(response)(overrides)
+export const getResponseFixture = <Document>(overrides?: Partial<QueryResponse<Document>>) => createFixture<QueryResponse<Document>>(response)(overrides)

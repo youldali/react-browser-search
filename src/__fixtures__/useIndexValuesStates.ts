@@ -1,6 +1,11 @@
+import { GetIndexValuesRequest } from '@browser-search/browser-search';
+
 import {
-    UseIndexValuesErrorState, UseIndexValuesIdleState, UseIndexValuesLoadingState,
-    UseIndexValuesRequestPayload, UseIndexValuesResponsePayload, UseIndexValuesStaleState,
+    UseIndexValuesErrorState,
+    UseIndexValuesIdleState,
+    UseIndexValuesLoadingState,
+    UseIndexValuesResponsePayload,
+    UseIndexValuesStaleState,
     UseIndexValuesSuccessState,
 } from '../useIndexValues';
 
@@ -11,9 +16,9 @@ const idleState: UseIndexValuesIdleState = {
   isFetching: false,
 }
 
-const request: UseIndexValuesRequestPayload = {
+const request: GetIndexValuesRequest = {
   storeId: 'storeId',
-  indexId: 'indexId',
+  field: 'indexId',
 }
 
 const response: UseIndexValuesResponsePayload<unknown> = [];
@@ -46,7 +51,7 @@ const errorState: UseIndexValuesErrorState = {
   error: new Error(),
 }
 
-export const getResquestPayloadFixture = (overrides?: Partial<UseIndexValuesRequestPayload>) => createFixture(request)(overrides);
+export const getResquestPayloadFixture = (overrides?: Partial<GetIndexValuesRequest>) => createFixture(request)(overrides);
 export const getResponsePayloadFixture = <FieldValues = string>(overrides?: Partial<UseIndexValuesResponsePayload<FieldValues>>) => createFixture(response as UseIndexValuesResponsePayload<FieldValues>)(overrides);
 
 export const getIdleStateFixture = () => createFixture(idleState)();

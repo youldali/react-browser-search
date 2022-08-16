@@ -1,41 +1,33 @@
-import { StoreId } from '@browser-search/browser-search';
+import { GetIndexValuesRequest } from '@browser-search/browser-search';
 import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import { Just, Maybe, Nothing } from 'purify-ts/Maybe';
 
 import { buildStateMachine, StateTransition } from '../stateMachine';
 import * as GenericQueryState from '../queryState';
 import { BrowserSearchContext } from '../provider';
-import { IndexRequest } from '../indexRequest';
-
-type IndexId = string;
-
-export type RequestPayload = {
-  indexId: IndexId;
-  storeId: StoreId;
-}
 
 export type ResponsePayload<FieldValue> = FieldValue[];
 
 export interface IdleState extends GenericQueryState.IdleState {
 }
 
-export interface LoadingQueryState extends GenericQueryState.LoadingQueryState<RequestPayload>  {
+export interface LoadingQueryState extends GenericQueryState.LoadingQueryState<GetIndexValuesRequest>  {
 }
 
-export interface StaleQueryState<T> extends GenericQueryState.StaleQueryState<RequestPayload, ResponsePayload<T>> {
+export interface StaleQueryState<T> extends GenericQueryState.StaleQueryState<GetIndexValuesRequest, ResponsePayload<T>> {
 }
 
-export interface SuccessQueryState<T> extends GenericQueryState.SuccessQueryState<RequestPayload, ResponsePayload<T>> {
+export interface SuccessQueryState<T> extends GenericQueryState.SuccessQueryState<GetIndexValuesRequest, ResponsePayload<T>> {
 }
 
-export interface ErrorQueryState extends GenericQueryState.ErrorQueryState<RequestPayload, Error> {
+export interface ErrorQueryState extends GenericQueryState.ErrorQueryState<GetIndexValuesRequest, Error> {
 }
 
 export type QueryState<T> = IdleState | LoadingQueryState | StaleQueryState<T> | SuccessQueryState<T> | ErrorQueryState;
 
-export type RequestStartedAction = { type: 'requestStarted'; request: RequestPayload,};
-export type RequestFailedAction = { type: 'requestFailed'; request: RequestPayload, error: Error}
-export type RequestCompletedAction<FieldValue> = { type: 'requestCompleted'; response: FieldValue[]; request: RequestPayload,}
+export type RequestStartedAction = { type: 'requestStarted'; request: GetIndexValuesRequest,};
+export type RequestFailedAction = { type: 'requestFailed'; request: GetIndexValuesRequest, error: Error}
+export type RequestCompletedAction<FieldValue> = { type: 'requestCompleted'; response: FieldValue[]; request: GetIndexValuesRequest,}
 
 export type Action<FieldValue> =
   | RequestStartedAction
@@ -144,7 +136,7 @@ export const buildReducer = <FieldValue>(): QueryReducer<FieldValue> => {
   return buildStateMachine(stateTransitions);
 }
 
-export const useIndexValues = <T extends IDBValidKey>(storeId: StoreId, indexId: IndexId): QueryState<T> => {
+export const useIndexValues = <T extends IDBValidKey>({storeId, field}: GetIndexValuesRequest): QueryState<T> => {
   const queryClient = useContext(BrowserSearchContext);
   const [state, dispatch] = useReducer<QueryReducer<T>>(
     buildReducer<T>(),
@@ -152,9 +144,9 @@ export const useIndexValues = <T extends IDBValidKey>(storeId: StoreId, indexId:
   );
 
   const runQuery = useCallback( (): void => {
-    const request: IndexRequest = {
+    const request: GetIndexValuesRequest = {
       storeId,
-      indexId,
+      field,
     };
 
     const responsePromise = queryClient.queryIndex(request);
@@ -168,7 +160,7 @@ export const useIndexValues = <T extends IDBValidKey>(storeId: StoreId, indexId:
       .catch(error => {
         dispatch({type: 'requestFailed', request, error})
       })
-  }, [storeId, indexId]);
+  }, [storeId, field]);
 
   useEffect(() => {
     queryClient.subscribeToStoreChange(storeId)(runQuery);

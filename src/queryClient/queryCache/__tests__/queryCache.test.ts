@@ -1,17 +1,17 @@
-import { Request, SearchResponse, StoreId } from '@browser-search/browser-search';
+import { QueryRequest, QueryResponse, StoreId } from '@browser-search/browser-search';
 
 import { buildQueryCache } from '../queryCache';
 
 describe ('buildQueryCache', () => {
   
   const storeId: StoreId = 'storeId';
-  const request: Request<object, string> = {
+  const request: QueryRequest<object, string> = {
     storeId,
     filterConfig: [],
     filtersApplied: [],
   };
 
-  const response: SearchResponse<object, string> = {
+  const response: QueryResponse<object, string> = {
     documents: [] as object[],
     stats: {},
     numberOfDocuments: 0,  
@@ -30,7 +30,7 @@ describe ('buildQueryCache', () => {
     it('gets the pending promise if no value exists', () => {
       const cache = buildQueryCache();
 
-      const pendingPromise: Promise<SearchResponse<object, string>> = new Promise(() => {})
+      const pendingPromise: Promise<QueryResponse<object, string>> = new Promise(() => {})
       cache.addQueryToCache(request, pendingPromise);
 
       const just = cache.queryCache(request);

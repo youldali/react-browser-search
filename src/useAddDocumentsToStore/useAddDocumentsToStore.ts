@@ -1,4 +1,4 @@
-import { CreateStoreRequest } from '@browser-search/browser-search';
+import { AddDocumentsToStoreRequest } from '@browser-search/browser-search';
 import { Reducer, useCallback, useContext, useReducer } from 'react';
 import { Just, Maybe, Nothing } from 'purify-ts/Maybe';
 
@@ -7,16 +7,17 @@ import * as GenericQueryState from '../queryState';
 import { BrowserSearchContext } from '../provider';
 
 export type ResponsePayload = null;
+
 export interface IdleState extends GenericQueryState.IdleState {
 }
 
-export interface LoadingQueryState<TDocument> extends GenericQueryState.LoadingQueryState<CreateStoreRequest<TDocument>>  {
+export interface LoadingQueryState<TDocument> extends GenericQueryState.LoadingQueryState<AddDocumentsToStoreRequest<TDocument>>  {
 }
 
-export interface SuccessQueryState<TDocument> extends GenericQueryState.SuccessQueryState<CreateStoreRequest<TDocument>, ResponsePayload> {
+export interface SuccessQueryState<TDocument> extends GenericQueryState.SuccessQueryState<AddDocumentsToStoreRequest<TDocument>, ResponsePayload> {
 }
 
-export interface ErrorQueryState<TDocument> extends GenericQueryState.ErrorQueryState<CreateStoreRequest<TDocument>, Error> {
+export interface ErrorQueryState<TDocument> extends GenericQueryState.ErrorQueryState<AddDocumentsToStoreRequest<TDocument>, Error> {
 }
 
 export type QueryState<TDocument> = IdleState | LoadingQueryState<TDocument> | SuccessQueryState<TDocument> | ErrorQueryState<TDocument>;
@@ -51,9 +52,9 @@ const fromLoadingToSuccess = <TDocument>(state: QueryState<TDocument>, action: A
   }) : Nothing
 )
 
-export type RequestStartedAction<TDocument> = { type: 'requestStarted'; request: CreateStoreRequest<TDocument>,};
-export type RequestFailedAction<TDocument> = { type: 'requestFailed'; request: CreateStoreRequest<TDocument>, error: Error}
-export type RequestCompletedAction<TDocument> = { type: 'requestCompleted'; response: ResponsePayload; request: CreateStoreRequest<TDocument>,}
+export type RequestStartedAction<TDocument> = { type: 'requestStarted'; request: AddDocumentsToStoreRequest<TDocument>,};
+export type RequestFailedAction<TDocument> = { type: 'requestFailed'; request: AddDocumentsToStoreRequest<TDocument>, error: Error}
+export type RequestCompletedAction<TDocument> = { type: 'requestCompleted'; response: ResponsePayload; request: AddDocumentsToStoreRequest<TDocument>,}
 
 export type Action<TDocument> =
   | RequestStartedAction<TDocument>
@@ -73,15 +74,15 @@ export const buildReducer = <TDocument>(): QueryReducer<TDocument> => {
   return buildStateMachine(stateTransitions);
 }
 
-export const useCreateStore = <TDocument>(): [(request: CreateStoreRequest<TDocument>) => Promise<void>, QueryState<TDocument>] => {
+export const useAddDocumentsToStore = <TDocument>(): [(request: AddDocumentsToStoreRequest<TDocument>) => Promise<void>, QueryState<TDocument>] => {
   const queryClient = useContext(BrowserSearchContext);
   const [state, dispatch] = useReducer<QueryReducer<TDocument>>(
     buildReducer(),
     initialState,
   );
 
-  const runQuery = useCallback( (request: CreateStoreRequest<TDocument>): Promise<void> => {
-    const responsePromise = queryClient.createStore<TDocument>(request);
+  const runQuery = useCallback( (request: AddDocumentsToStoreRequest<TDocument>): Promise<void> => {
+    const responsePromise = queryClient.addDocumentsToStore<TDocument>(request);
     
     dispatch({type: 'requestStarted', request})
     

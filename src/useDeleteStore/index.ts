@@ -1,5 +1,5 @@
 export { useDeleteStore } from './useDeleteStore';
-export type { ResponsePayload as UseDeleteStoreResponsePayload, RequestPayload as UseDeleteStoreRequestPayload} from './useDeleteStore';
+export type { ResponsePayload as UseDeleteStoreResponsePayload } from './useDeleteStore';
 export type { 
   QueryState as UseDeleteStoreQueryState, 
   IdleState as UseDeleteStoreIdleState, 

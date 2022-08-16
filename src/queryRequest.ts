@@ -1,8 +1,8 @@
 import hash from 'object-hash';
-import { Request } from '@browser-search/browser-search';
+import { QueryRequest } from '@browser-search/browser-search';
 import memoize from 'memoizee';
 
-export type AnyRequest = Request<any, any>;
+export type AnyRequest = QueryRequest<any, any>;
 
 export const hashRequest = memoize(
   (request: AnyRequest): string => hashObject(request),

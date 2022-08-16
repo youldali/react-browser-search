@@ -1,11 +1,11 @@
-import { Request } from '@browser-search/browser-search';
+import { QueryRequest } from '@browser-search/browser-search';
 
 import { createFixture } from './createFixture';
 
-const request: Request<any, string> = {
+const request: QueryRequest<any, string> = {
   storeId: 'storeId',
   filterConfig: [],
   filtersApplied: [],
 };
 
-export const getRequestFixture = <Document>(overrides?: Partial<Request<Document>>) => createFixture<Request<Document>>(request)(overrides)
+export const getRequestFixture = <Document>(overrides?: Partial<QueryRequest<Document>>) => createFixture<QueryRequest<Document>>(request)(overrides)

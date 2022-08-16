@@ -1,7 +1,7 @@
 import * as BS from '@browser-search/browser-search';
 import { Maybe } from 'purify-ts/Maybe';
 
-import { hashRequest } from '../../request';
+import { hashRequest } from '../../queryRequest';
 
 import { buildStoreCache } from './storeCache';
 
@@ -11,18 +11,18 @@ export const buildQueryCache = () => {
   const responseCache = buildStoreCache();
   const pendingQueryCache = buildStoreCache();
 
-  const queryCache = <Document>(request: BS.Request<Document>): Maybe<Promise<BS.SearchResponse<Document>>> => {
+  const queryCache = <Document>(request: BS.QueryRequest<Document>): Maybe<Promise<BS.QueryResponse<Document>>> => {
     const requestHash = hashRequest(request);
 
     return (
       responseCache
-        .queryCache<RequestHash, BS.SearchResponse<Document>>(request.storeId, requestHash)
+        .queryCache<RequestHash, BS.QueryResponse<Document>>(request.storeId, requestHash)
         .map(response => Promise.resolve(response))
-        .alt(pendingQueryCache.queryCache<RequestHash, Promise<BS.SearchResponse<Document>>>(request.storeId, requestHash))
+        .alt(pendingQueryCache.queryCache<RequestHash, Promise<BS.QueryResponse<Document>>>(request.storeId, requestHash))
     )
   }
 
-  const addQueryToCache = <Document>(request: BS.Request<Document>, query: Promise<BS.SearchResponse<Document>>): void => {
+  const addQueryToCache = <Document>(request: BS.QueryRequest<Document>, query: Promise<BS.QueryResponse<Document>>): void => {
     const requestHash = hashRequest(request);
     pendingQueryCache.addValueToStoreCache(request.storeId, requestHash, query);
 

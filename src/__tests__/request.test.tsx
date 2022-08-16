@@ -1,5 +1,5 @@
 import { getRequestFixture } from '../__fixtures__';
-import { areRequestsEqual } from '../request';
+import { areRequestsEqual } from '../queryRequest';
 
 describe ('areRequestsEqual', () => {
 

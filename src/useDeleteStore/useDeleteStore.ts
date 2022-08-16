@@ -1,4 +1,4 @@
-import { SimplifiedIndexConfig, StoreId } from '@browser-search/browser-search';
+import { DeleteStoreRequest } from '@browser-search/browser-search';
 import { Reducer, useCallback, useContext, useReducer } from 'react';
 import { Just, Maybe, Nothing } from 'purify-ts/Maybe';
 
@@ -7,21 +7,16 @@ import * as GenericQueryState from '../queryState';
 import { BrowserSearchContext } from '../provider';
 
 export type ResponsePayload = null;
-export type RequestPayload = {
-  storeId: StoreId,
-};
-
-
 export interface IdleState extends GenericQueryState.IdleState {
 }
 
-export interface LoadingQueryState extends GenericQueryState.LoadingQueryState<RequestPayload>  {
+export interface LoadingQueryState extends GenericQueryState.LoadingQueryState<DeleteStoreRequest>  {
 }
 
-export interface SuccessQueryState extends GenericQueryState.SuccessQueryState<RequestPayload, ResponsePayload> {
+export interface SuccessQueryState extends GenericQueryState.SuccessQueryState<DeleteStoreRequest, ResponsePayload> {
 }
 
-export interface ErrorQueryState extends GenericQueryState.ErrorQueryState<RequestPayload, Error> {
+export interface ErrorQueryState extends GenericQueryState.ErrorQueryState<DeleteStoreRequest, Error> {
 }
 
 export type QueryState = IdleState | LoadingQueryState | SuccessQueryState | ErrorQueryState;
@@ -56,9 +51,9 @@ const fromLoadingToSuccess = (state: QueryState, action: Action): Maybe<SuccessQ
   }) : Nothing
 )
 
-export type RequestStartedAction = { type: 'requestStarted'; request: RequestPayload,};
-export type RequestFailedAction = { type: 'requestFailed'; request: RequestPayload, error: Error}
-export type RequestCompletedAction = { type: 'requestCompleted'; response: ResponsePayload; request: RequestPayload,}
+export type RequestStartedAction = { type: 'requestStarted'; request: DeleteStoreRequest,};
+export type RequestFailedAction = { type: 'requestFailed'; request: DeleteStoreRequest, error: Error}
+export type RequestCompletedAction = { type: 'requestCompleted'; response: ResponsePayload; request: DeleteStoreRequest,}
 
 export type Action =
   | RequestStartedAction
@@ -78,14 +73,14 @@ export const buildReducer = (): QueryReducer => {
   return buildStateMachine(stateTransitions);
 }
 
-export const useDeleteStore = (): [(request: RequestPayload) => Promise<void>, QueryState] => {
+export const useDeleteStore = (): [(request: DeleteStoreRequest) => Promise<void>, QueryState] => {
   const queryClient = useContext(BrowserSearchContext);
   const [state, dispatch] = useReducer<QueryReducer>(
     buildReducer(),
     initialState,
   );
 
-  const runQuery = useCallback( (request: RequestPayload): Promise<void> => {
+  const runQuery = useCallback( (request: DeleteStoreRequest): Promise<void> => {
     const responsePromise = queryClient.deleteStore(request.storeId);
     
     dispatch({type: 'requestStarted', request})

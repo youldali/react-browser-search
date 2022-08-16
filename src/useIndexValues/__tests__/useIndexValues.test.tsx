@@ -3,10 +3,15 @@ import { act, renderHook } from '@testing-library/react-hooks';
 
 import { useIndexValuesStates } from '../../__fixtures__';
 import {
-    buildReducer, LoadingQueryState, RequestCompletedAction, RequestFailedAction,
-    RequestStartedAction, SuccessQueryState, useIndexValues,
+    buildReducer,
+    LoadingQueryState,
+    RequestCompletedAction,
+    RequestFailedAction,
+    RequestStartedAction,
+    SuccessQueryState,
+    useIndexValues,
 } from '../useIndexValues';
-import { useAddDataToStore } from '../../useAddDataToStore';
+import { useAddDocumentsToStore } from '../../useAddDocumentsToStore';
 import { BrowserSearchProvider } from '../../provider/__mocks__';
 
 const { getErrorStateFixture, getIdleStateFixture, getLoadingStateFixture, getStaleStateFixture, getSuccessStateFixture, getResponsePayloadFixture, getResquestPayloadFixture } = useIndexValuesStates;
@@ -19,14 +24,14 @@ const createWrapper = () => ({ children }: { children?: React.ReactNode }) => <B
 describe('useIndexValuesStates', () => {
 
   const storeId = 'storeId';
-  const indexId = 'indexId';
+  const field = 'indexId';
 
   it('returns loading and success states when the promise is resolved', async () => {
-    const {result, waitForNextUpdate} = renderHook(() => useIndexValues(storeId, indexId), {wrapper: createWrapper()})
+    const {result, waitForNextUpdate} = renderHook(() => useIndexValues({storeId, field}), {wrapper: createWrapper()})
 
     const loadingState = result.current as LoadingQueryState;
     expect(loadingState.status).toBe('loading');
-    expect(loadingState.request).toEqual({storeId, indexId});
+    expect(loadingState.request).toEqual({storeId, field});
     const loadingStateRequest = loadingState.request;
 
     await waitForNextUpdate();
@@ -37,12 +42,12 @@ describe('useIndexValuesStates', () => {
   })
 
   it('returns the same response (from the cache) when 2 identical requests are made', async () => {
-    const renderHookResultA = renderHook(() => useIndexValues(storeId, indexId), {wrapper: createWrapper()})
+    const renderHookResultA = renderHook(() => useIndexValues({storeId, field}), {wrapper: createWrapper()})
     await renderHookResultA.waitForNextUpdate();
     const successStateA = renderHookResultA.result.current as SuccessQueryState<unknown>;
     const responseA = successStateA.response;
 
-    const renderHookResultB = renderHook(() => useIndexValues(storeId, indexId), {wrapper: createWrapper()})
+    const renderHookResultB = renderHook(() => useIndexValues({storeId, field}), {wrapper: createWrapper()})
     await renderHookResultB.waitForNextUpdate();
     const successStateB = renderHookResultA.result.current as SuccessQueryState<unknown>;
     const responseB = successStateB.response;
@@ -51,16 +56,16 @@ describe('useIndexValuesStates', () => {
   })
 
   it('does not return the request from the cache when the store has been mutated', async () => {
-    const {result: {current: [addDataToStore]}} = renderHook(() => useAddDataToStore(), {wrapper: createWrapper()})
+    const {result: {current: [addDataToStore]}} = renderHook(() => useAddDocumentsToStore(), {wrapper: createWrapper()})
 
-    const renderHookResultA = renderHook(() => useIndexValues(storeId, indexId), {wrapper: createWrapper()})
+    const renderHookResultA = renderHook(() => useIndexValues({storeId, field}), {wrapper: createWrapper()})
     await renderHookResultA.waitForNextUpdate();
     const successStateA = renderHookResultA.result.current as SuccessQueryState<unknown>;
     const responseA = successStateA.response;
 
-    await act(() => {addDataToStore({storeId, data: []})});
+    await act(() => {addDataToStore({storeId, documents: []})});
 
-    const renderHookResultB = renderHook(() => useIndexValues(storeId, indexId), {wrapper: createWrapper()})
+    const renderHookResultB = renderHook(() => useIndexValues({storeId, field}), {wrapper: createWrapper()})
     await renderHookResultB.waitForNextUpdate();
     const successStateB = renderHookResultA.result.current as SuccessQueryState<unknown>;
     const responseB = successStateB.response;
@@ -69,14 +74,14 @@ describe('useIndexValuesStates', () => {
   })
 
   it('refreshes the response when the store has been mutated', async () => {
-    const {result: {current: [addDataToStore]}} = renderHook(() => useAddDataToStore(), {wrapper: createWrapper()})
+    const {result: {current: [addDataToStore]}} = renderHook(() => useAddDocumentsToStore(), {wrapper: createWrapper()})
 
-    const renderHookResult = renderHook(() => useIndexValues(storeId, indexId), {wrapper: createWrapper()})
+    const renderHookResult = renderHook(() => useIndexValues({storeId, field}), {wrapper: createWrapper()})
     await renderHookResult.waitForNextUpdate();
     const successState = renderHookResult.result.current as SuccessQueryState<unknown>;
     const responseA = successState.response;
 
-    await act(() => {addDataToStore({storeId, data: []})});
+    await act(() => {addDataToStore({storeId, documents: []})});
 
     const successStateB = renderHookResult.result.current as SuccessQueryState<unknown>;
     expect(responseA).not.toBe(successStateB.response);

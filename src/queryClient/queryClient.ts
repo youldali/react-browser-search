@@ -1,7 +1,5 @@
 import * as BS from '@browser-search/browser-search';
 
-import { IndexRequest } from '../indexRequest';
-
 import { buildIndexValuesCache, buildQueryCache } from './queryCache';
 import { buildSubscriber } from './subscriber';
 
@@ -20,14 +18,14 @@ export const buildQueryClient = () => {
   )
 
 
-  const queryStore = <Document>(request: BS.Request<Document>): [Promise<BS.SearchResponse<Document>>, BS.AbortSearch] => {
+  const queryStore = <Document>(request: BS.QueryRequest<Document>): [Promise<BS.QueryResponse<Document>>, BS.AbortSearch] => {
     const maybeCachedSearchResponsePromise = queryCache.queryCache<Document>(request);
 
     return (
       maybeCachedSearchResponsePromise.caseOf({
         Just: searchResponse => [searchResponse, () => {}],
         Nothing: () => {
-          const [searchResponsePromise, abort] = BS.searchStore(request);
+          const [searchResponsePromise, abort] = BS.queryStore(request);
           queryCache.addQueryToCache<Document>(request, searchResponsePromise);
           return [searchResponsePromise, abort];
         }
@@ -35,14 +33,14 @@ export const buildQueryClient = () => {
     )
   }
 
-  const queryIndex = <Value extends IDBValidKey>(request: IndexRequest): Promise<Value[]> => {
+  const queryIndex = <Value extends IDBValidKey>(request: BS.GetIndexValuesRequest): Promise<Value[]> => {
     const maybeCachedResponsePromise = indexValuesCache.queryCache<Value>(request);
 
     return (
       maybeCachedResponsePromise.caseOf({
         Just: indexValues => indexValues,
         Nothing: () => {
-          const indexValuesPromise = BS.getAllValuesOfProperty<Value>(request.storeId)(request.indexId);
+          const indexValuesPromise = BS.getIndexValues<Value>(request);
           indexValuesCache.addQueryToCache<Value>(request, indexValuesPromise);
           return indexValuesPromise;
         }
@@ -52,9 +50,9 @@ export const buildQueryClient = () => {
 
   const createStore = BS.createStore;
 
-  const deleteStore = mutateStore(BS.deleteStore);
+  const deleteStore = mutateStore((storeId) => BS.deleteStore({storeId}));
 
-  const addDataToStore = <Document>(storeId: BS.StoreId) => (data: Document[]) => mutateStore((storeId: BS.StoreId) => BS.addDocumentsToStore<Document>(storeId)(data))(storeId);
+  const addDocumentsToStore = <TDocument>(request: BS.AddDocumentsToStoreRequest<TDocument>) => mutateStore((_: BS.StoreId) => BS.addDocumentsToStore<TDocument>(request))(request.storeId);
 
   const subscribeToStoreChange = subscriber.addStoreListener;
 
@@ -65,7 +63,7 @@ export const buildQueryClient = () => {
     queryIndex,
     createStore,
     deleteStore,
-    addDataToStore,
+    addDocumentsToStore,
     subscribeToStoreChange,
     unsubscribeToStoreChange,
   }

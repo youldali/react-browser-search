@@ -3,10 +3,15 @@ import { act, renderHook } from '@testing-library/react-hooks';
 
 import { getRequestFixture, getResponseFixture, useQueryStates } from '../../__fixtures__';
 import {
-    buildReducer, LoadingQueryState, SearchCompletedAction, SearchFailedAction, SearchStartedAction,
-    SuccessQueryState, useQuery,
+    buildReducer,
+    LoadingQueryState,
+    SearchCompletedAction,
+    SearchFailedAction,
+    SearchStartedAction,
+    SuccessQueryState,
+    useQuery,
 } from '../useQuery';
-import { useAddDataToStore } from '../../useAddDataToStore';
+import { useAddDocumentsToStore } from '../../useAddDocumentsToStore';
 import { BrowserSearchProvider } from '../../provider/__mocks__';
 
 jest.mock('../../queryClient');
@@ -53,14 +58,14 @@ describe('useQuery', () => {
 
   it('does not return the request from the cache when the store has been mutated', async () => {
     const request = getRequestFixture({storeId});
-    const {result: {current: [addDataToStore]}} = renderHook(() => useAddDataToStore(), {wrapper: createWrapper()})
+    const {result: {current: [addDocumentsToStore]}} = renderHook(() => useAddDocumentsToStore(), {wrapper: createWrapper()})
 
     const renderHookResultA = renderHook(() => useQuery(request), {wrapper: createWrapper()})
     await renderHookResultA.waitForNextUpdate();
     const successStateA = renderHookResultA.result.current as SuccessQueryState<unknown>;
     const responseA = successStateA.response;
 
-    await act(() => {addDataToStore({storeId, data: []})});
+    await act(() => {addDocumentsToStore({storeId, documents: []})});
 
     const renderHookResultB = renderHook(() => useQuery(request), {wrapper: createWrapper()})
     await renderHookResultB.waitForNextUpdate();
@@ -72,14 +77,14 @@ describe('useQuery', () => {
 
   it('refreshes the response when the store has been mutated', async () => {
     const request = getRequestFixture({storeId});
-    const {result: {current: [addDataToStore]}} = renderHook(() => useAddDataToStore(), {wrapper: createWrapper()})
+    const {result: {current: [addDocumentsToStore]}} = renderHook(() => useAddDocumentsToStore(), {wrapper: createWrapper()})
 
     const renderHookResult = renderHook(() => useQuery(request), {wrapper: createWrapper()})
     await renderHookResult.waitForNextUpdate();
     const successState = renderHookResult.result.current as SuccessQueryState<unknown>;
     const responseA = successState.response;
 
-    await act(() => {addDataToStore({storeId, data: []})});
+    await act(() => {addDocumentsToStore({storeId, documents: []})});
 
     const successStateB = renderHookResult.result.current as SuccessQueryState<unknown>;
     expect(responseA).not.toBe(successStateB.response);
