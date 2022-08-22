@@ -6,36 +6,30 @@ This library provides react hooks to the [browser-search library](https://github
 Please read the documentation of [browser-search](https://github.com/youldali/browser-search) before using
 
 
-## Table of contents
-- [react-browser-search](#react-browser-search)
-    - [**-> Take a look at the demo**](#--take-a-look-at-the-demo)
-  - [Get Started](#get-started)
-    - [Installation](#installation)
-    - [Usage flow](#usage-flow)
-    - [Step 1 - Wrap your component tree in  the react-browser-search provider](#step-1---wrap-your-component-tree-in--the-react-browser-search-provider)
-    - [Step 2 - Create a store](#step-2---create-a-store)
-    - [Step 3 - Add documents](#step-3---add-documents)
-    - [Step 4 - run a search query](#step-4---run-a-search-query)
+- [Get Started](#get-started)
+	- [Installation](#installation)
+	- [Usage flow](#usage-flow)
 - [API Methods](#api-methods)
-  - [useCreateStore](#usecreatestore)
-    - [Signature](#signature)
-    - [Example](#example)
-  - [useAddDataToStore](#useadddatatostore)
-    - [Signature](#signature-1)
-    - [Example](#example-1)
-  - [useQuery](#usequery)
-    - [Signature](#signature-2)
-    - [Example](#example-2)
-  - [useIndexValues](#useindexvalues)
-    - [Signature](#signature-3)
-    - [Example](#example-3)
-  - [useDeleteStore](#usedeletestore)
-    - [Signature](#signature-4)
-    - [Example](#example-4)
-    - [Example](#example-5)
-  - [BrowserSearchProvider](#browsersearchprovider)
-    - [Example](#example-6)
-
+	- [useCreateStore](#usecreatestore)
+		- [Signature](#signature)
+		- [Example](#example)
+	- [useAddDocumentsToStore](#useadddocumentstostore)
+		- [Signature](#signature-1)
+		- [Example](#example-1)
+	- [useQuery](#usequery)
+		- [Signature](#signature-2)
+		- [Example](#example-2)
+	- [useIndexValues](#useindexvalues)
+		- [Signature](#signature-3)
+		- [Example](#example-3)
+	- [useDeleteStore](#usedeletestore)
+		- [Signature](#signature-4)
+		- [Example](#example-4)
+	- [BrowserSearchProvider](#browsersearchprovider)
+		- [Example](#example-5)
+- [API Interfaces](#api-interfaces)
+	- [QueryState](#querystate)
+		- [Definition](#definition)
 
 ## Get Started
 ### Installation
@@ -58,11 +52,11 @@ B --> E[etc.]
 ```
 
 ### Step 1 - Wrap your component tree in  the react-browser-search provider
-For the hooks to the work, you need to wrap them to the provider which contains a client + cache layer.
+For the hooks to work, you need to wrap your component tree in the provider which contains a client + cache layer.
 See [BrowserSearchProvider](#BrowserSearchProvider) for usage
 
 ### Step 2 - Create a store
-Before anything, you need to create a store that will later hold your data.
+To get started, create a store that will later hold your data.
 You need to know in advance 
 - the type of the documents you will store
 - the fields that you will use for filtering / sorting. Those fields must be indexed.
@@ -70,7 +64,7 @@ See [useCreateStore](#useCreateStore)
 
 ### Step 3 - Add documents
 Then you can add documents to the newly created store
-See [useAddDataToStore](#useAddDataToStore)
+See [useAddDocumentsToStore](#useAddDocumentsToStore)
 
 ### Step 4 - run a search query
 You can now run complex queries to filter and sort your document, and display them to your users.
@@ -83,24 +77,30 @@ See [useQuery](#useQuery) for usage
 
 ### Signature
 ```typescript
-<DataSchema>(): [(request: RequestPayload<DataSchema>) =>  Promise<void>, QueryState<DataSchema>]
+<TDocument>(): [(request: CreateStoreRequest<TDocument>) =>  Promise<void>, QueryState<TDocument>]
 ```
 
 #### Generics
-- `DataSchema` is the type of the document you will store
+- `TDocument` is the type of the document you will store
 
 #### Parameters
-- `request: RequestPayload<DataSchema>` is the object containing the request for the store creation
-	- `storeId: string` the name of the store to create
-	- `indexConfig: SimplifiedIndexConfig<DataSchema>` the fields to index. [see reference here](https://github.com/youldali/browser-search/tree/master#SimplifiedIndexConfig)
-	- `keyPath: keyof  DataSchema` is the field which is be the primary key. That field does not need to be included in the `indexConfig` above
+none
 
 ####  Return value
 
-    [(request: RequestPayload<DataSchema>) =>  Promise<void>, UseCreateStoreQueryState<DataSchema>]
+```typescript
+[(request: CreateStoreRequest<TDocument>) =>  Promise<void>, QueryState<TDocument>]
+```
+**With**
+- `request: CreateStoreRequest<TDocument>` is the object containing the request for the store creation
+	- `storeId: string` the name of the store to create
+	- `indexConfig: SimplifiedIndexConfig<DataSchema>` the fields to index. [see reference here](https://github.com/youldali/browser-search/tree/master#SimplifiedIndexConfig)
+	- `keyPath: keyof TDocument` is the field which is be the primary key. That field does not need to be included in the `indexConfig` above
+- `queryState: UseCreateStoreQueryState`: see [QueryState](#QueryState)
 
 ### Example
 Let's say we want to store **books** of the following type:
+
 ```typescript
 export  interface  Book {
 	isbn: string; // primary key
@@ -119,7 +119,7 @@ import { useCreateStore, UseCreateStoreQueryState } from  '@browser-search/react
 const storeName = "bookLibrary";
 const indexConfig: SimplifiedIndexConfig<Book> = {
 	simple: ['title', 'releaseDate'],
-	array: ['authors', 'categories'] // every field which is an array
+	array: ['authors', 'categories'],
 };
 const keyPath = 'isbn';
 
@@ -136,87 +136,86 @@ const  useCreateLibraryStore = (): [() =>  Promise<void>, UseCreateStoreQuerySta
 };
 ```
 
-## useAddDataToStore
-[see addDataToStore](https://github.com/youldali/browser-search/tree/master#addDataToStore)
+## useAddDocumentsToStore
+[see addDocumentsToStore](https://github.com/youldali/browser-search/tree/master#addDocumentsToStore)
 
 ### Signature
 ```typescript
-<DataSchema>(): [(request: RequestPayload<DataSchema>) =>  Promise<void>, UseAddDataToStoreQueryState<DataSchema>]
+<TDocument>(): [(request: AddDocumentsToStoreRequest<TDocument>) =>  Promise<void>, QueryState<TDocument>]
 ```
 
 #### Generics
-- `DataSchema` is the type of the document you will store
+- `TDocument` is the type of the document you will store
 
 #### Parameters
-- `request: RequestPayload<DataSchema>` is the object containing the request to add the data to the store
-	- `storeId: string` the name of the store to create
-	- `data: DataSchema[]` is the array of documents to be stored
+ none 
 
 ####  Return value
-
-    [(request: RequestPayload<DataSchema>) =>  Promise<void>, UseAddDataToStoreQueryState<DataSchema>]
-
+```typescript
+[(request: AddDocumentsToStoreRequest<TDocument>) =>  Promise<void>, QueryState<TDocument>]
+```
+**With**
+- `request: AddDocumentsToStoreRequest<TDocument>` is the object containing the request to add the data to the store
+	- `storeId: string` the name of the store to create
+	- `documents: TDocument[]` is the array of documents to be stored
+- `queryState: UseAddDocumentsToStoreQueryState`: see [QueryState](#QueryState)
+	
 ### Example
 
 ```typescript
-import { useAddDataToStore } from  '@browser-search/react-browser-search';
+import { useAddDocumentsToStore, UseAddDocumentsToStoreQueryState } from  '@browser-search/react-browser-search';
 
 const storeId = 'bookLibrary';
 
-const useAddBooksToLibraryStore = (): [(books: Book[]) =>  Promise<void>, UseAddDataToStoreQueryState<Book>] => {
-	const [addDataToStore, addDataToStoreQueryState] = useAddDataToStore<Person>();
+const useAddBooksToLibraryStore = (): [(books: Book[]) =>  Promise<void>, UseAddDocumentsToStoreQueryState<Book>] => {
+	const [addDocumentsToStore, addDocumentsToStoreQueryState] = useAddDocumentsToStore<Person>();
 
-	const addBooksToLibraryStore = (books) => {
+	const addBooksToLibraryStore = (books: Book[]) => {
 		return addDataToStore({
 			storeId,
-			data: books
+			documents: books
 		})
 	}
 
-	return [addBooksToLibraryStore, addDataToStoreQueryState];
+	return [addBooksToLibraryStore, addDocumentsToStoreQueryState];
 }
 ```
 
 ## useQuery
-[see searchStore](https://github.com/youldali/browser-search/tree/master#searchStore)
+[see queryStore](https://github.com/youldali/browser-search/tree/master#queryStore)
 
-- Any search results will be cached.
-- The cache is automatically invalidated on any store mutation and the request is re-triggered
-- Any request automatically cancels a previously sent (and unfinished) request
+Hook behaviour:
+- Every query response is cached
+- The cache is automatically invalidated at any store mutation and the request is automatically re-triggered
+- A request automatically cancels a previously pending request
 
 ### Signature
 ```typescript
-<Document, TFilterId  extends  string = string>(request: BS.Request<Document, TFilterId>): UseQueryQueryState<Document, TFilterId>
+<TDocument, TFilterId  extends  string = string>(request: QueryRequest<TDocument, TFilterId>): QueryState<TDocument, TFilterId>
 ```
 
 #### Generics
-- `Document` is the type of the document you will store
+- `TDocument` is the type of the document you will store
 - `TFilterId` is the string union of all the filters ids defined in the filterConfiguration object, passed in the request. Defaults to a string.
 
 #### Parameters
-- `request: BS.Request<Document, TFilterId>` is the object containing the search parameters.
-	- `storeId: string`: the store name
-	- `filterConfig: FilterConfig<T, TFilterId>`: the filter configuration object describes all the different filters of your UI.  [See reference](https://github.com/youldali/browser-search/tree/master#FilterConfig)
-	- `filtersApplied: FilterId[]`: the list of the **ids** of the filters applied. The ids come from the `id` property in the filter definition of the `filterConfig`
-	- `orderBy?: keyof T = undefined:` (optional) the property name on which to sort the data (must be part of the indexConfig when creating the store)
-	- `orderDirection?: 'ASC' | 'DESC' = 'ASC'`: (optional) the direction in which sort the data (ascending / descending). 
-	- `page? = 0`: (optional) The search is paginated. So you will only receive the documents matching between [page * perPage, (page + 1) * perPage]
-	- `perPage?: number = 20`: (optional) the maximum number of documents returned
+- `request: QueryRequest<TDocument, TFilterId>` is the object containing the query parameters. Refer to [QueryRequest](https://github.com/youldali/browser-search/tree/master#QueryRequest)
 
 ####  Return value 
 
-    UseQueryQueryState<Document, TFilterId>
-
+    UseQueryQueryState<TDocument, TFilterId>
+see [QueryState](#QueryState)
 ### Example
 
 ```typescript
-import { useAddDataToStore } from  '@browser-search/react-browser-search';
+import { useQuery, UseQueryQueryState } from  '@browser-search/react-browser-search';
+import { QueryRequest, FilterConfig } from  '@browser-search/browser-search';
 
 type  FilterIds = 'categoryFantasy' | 'categorySciFi' | 'categoryThriller';
 const storeId = 'bookLibrary';
 
 
-export  const  useBookQuery = (): UseQueryQueryState<Book, FilterId> => {
+export  const  useBookQuery = (filterApplied: FilterIds[]): UseQueryQueryState<Book, FilterId> => {
 	const filterConfig: FilterConfig<Book, FilterIds> = 
 	[
 		[
@@ -226,41 +225,44 @@ export  const  useBookQuery = (): UseQueryQueryState<Book, FilterId> => {
 		],
 	];
 	
-	const  request: Request<Person, FilterId> = () => (
+	const  queryRequest: QueryRequest<Person, FilterId> = () => (
 		storeId,
 		filterConfig,
-		filtersApplied: ['categoryFantasy', 'categorySciFi'], // the ids of the filter in the filter configuration that you are filtering on
+		filtersApplied, // the ids of the filter in the filter configuration that you are filtering on. Example: ['categoryFantasy', 'categorySciFi']
 		orderBy:  'releaseDate',
 		orderDirection: 'DESC',
 		perPage:  10,
 		page:  0,
 	};
 
-	return  useQuery<Book, FilterId>(request);
+	return  useQuery<Book, FilterId>(queryRequest);
 }
 ```
 
 ## useIndexValues
-[see getAllValuesOfProperty](https://github.com/youldali/browser-search/tree/master#getAllValuesOfProperty)
+[see getIndexValues](https://github.com/youldali/browser-search/tree/master#getIndexValues)
 
-- The request is re-triggered on any store mutation
+Hook behaviour:
+- Every query response is cached.
+- The cache is automatically invalidated on any store mutation and the request is automatically re-triggered
 
 ### Signature
 ```typescript
-<T  extends  IDBValidKey>(storeId: StoreId, indexId: IndexId): UseIndexValuesQueryState<T>
+<T  extends  IDBValidKey>({storeId, field}: GetIndexValuesRequest): QueryState<T>
 ```
 
 #### Generics
 - `T` is the type of the property indexed, that should be compliant with the `IDBValidKey` interface, where `IDBValidKey = number | string | Date | BufferSource | IDBValidKey[]` 
 
 #### Parameters
-- `request: BS.Request<T>` is the object containing the request parameters.
+- `request: GetIndexValuesRequest` is the object containing the request parameters.
 	- `storeId: string`: the store name
-	- `indexId: string` is the property for which you want to get all the values. It should be indexed at the store creation. [See SimplifiedIndexConfig reference](https://github.com/youldali/browser-search/tree/master#SimplifiedIndexConfig)
+	- `field: string` is the property for which you want to get all the values. It should be indexed at the store creation. [See SimplifiedIndexConfig reference](https://github.com/youldali/browser-search/tree/master#SimplifiedIndexConfig)
 
 ####  Return value 
 
     UseIndexValuesQueryState<T>
+see [QueryState](#QueryState)
 
 ### Example
 
@@ -270,10 +272,10 @@ import { useIndexValues, UseIndexValuesQueryState } from  '@browser-search/react
 const storeId = 'bookLibrary';
 
 // to get the list of all the titles stored
-export const  useBookTitleValues = (): UseIndexValuesQueryState<string[]> => {
+export const  useBookTitleValues = (): UseIndexValuesQueryState<string> => {
 	return  useIndexValues<string>({
 		storedId,
-		indexId: 'title',
+		field: 'title',
 	});
 }
 ```
@@ -283,55 +285,33 @@ export const  useBookTitleValues = (): UseIndexValuesQueryState<string[]> => {
 
 ### Signature
 ```typescript
-(): [(request: RequestPayload) =>  Promise<void>, QueryState]
+(): [(request: DeleteStoreRequest) =>  Promise<void>, QueryState]
 ```
 
 #### Parameters
-- `request: RequestPayload<DataSchema>` is the object containing the request for the store deletion
-	- `storeId: string` the name of the store to create
+none
 
 ####  Return value
 
-    [(request: RequestPayload<DataSchema>) =>  Promise<void>, UseCreateStoreQueryState<DataSchema>]
+```typescript
+[(request: DeleteStoreRequest) =>  Promise<void>, QueryState]
+```
+
+**With**
+- `request: DeleteStoreRequest` is the object containing the request for the store deletion
+	- `storeId: string` the name of the store to create
+- `queryState: UseDeleteStoreQueryState`: see [QueryState](#QueryState)
 
 ### Example
 
 ```typescript
 import { useDeleteStore, UseDeleteStoreQueryState } from  '@browser-search/react-browser-search';
 
-const storeName = "bookLibrary";
-
 const  useDeleteLibraryStore = (): [() =>  Promise<void>, UseDeleteStoreQueryState] => {
 
 	const [deleteStore, deleteStoreQueryState] = useDeleteStore();
 	const  deleteLibraryStore = () =>  deleteStore({
-	  storeId,
-	});
-
-	return [deleteLibraryStore, deleteStoreQueryState];
-};
-```
-
-#### Parameters
-- `request: RequestPayload<DataSchema>` is the object containing the request for the store deletion
-	- `storeId: string` the name of the store to create
-
-####  Return value
-
-    [(request: RequestPayload<DataSchema>) =>  Promise<void>, UseCreateStoreQueryState<DataSchema>]
-
-### Example
-
-```typescript
-import { useDeleteStore, UseDeleteStoreQueryState } from  '@browser-search/react-browser-search';
-
-const storeName = "bookLibrary";
-
-const  useDeleteLibraryStore = (): [() =>  Promise<void>, UseDeleteStoreQueryState] => {
-
-	const [deleteStore, deleteStoreQueryState] = useDeleteStore();
-	const  deleteLibraryStore = () =>  deleteStore({
-	  storeId,
+	  storeId: "bookLibrary",
 	});
 
 	return [deleteLibraryStore, deleteStoreQueryState];
@@ -351,4 +331,66 @@ import { BrowserSearchProvider } from  '@browser-search/react-browser-search';
 <BrowserSearchProvider>
 	<App />
 </BrowserSearchProvider>
+```
+# API Interfaces
+
+## QueryState
+This interface is returned by every hook. It is a react-state (meaning your component will re-render each time the query state changes) that represents the progress of the request.
+
+`QueryState` is a union type that can take the following shape: 
+
+    IdleQueryState | LoadingQueryState | SuccessQueryState | StaleQueryState | ErrorQueryState
+
+- `IdleQueryState`: when the request is not started. Example: a store mutation not yet called.
+- `LoadingQueryState`: when the request is ongoing. React-state equivalent of a *pending* promise.
+- `SuccessQueryState`: when the request has succeeded. React-state equivalent of a *resolved* promise.
+- `StaleQueryState`: when a new request is loading after a previous one succeeded. Only returned for non-mutation hooks, ie. only for [useIndexValues](#useIndexValues) and [useQuery](#useQuery). This state is useful when you still need access to the stale data while the new request is loading.
+- `ErrorQueryState`: when the request failed. React-state equivalent of a *rejected* promise.
+
+```mermaid
+graph LR
+0[IdleQueryState]-->A
+A[LoadingQueryState]--> B[SuccessQueryState]
+A --> C[ErrorQueryState]
+B --> D[StaleQueryState]
+D --> B
+D --> C
+```
+
+### Definition
+```typescript
+interface  IdleQueryState {
+	status: 'idle';
+	isFetching: false;
+}
+
+interface  LoadingQueryState<Request> {
+	status: 'loading';
+	request: Request;
+	isFetching: true;
+}
+
+interface  SuccessQueryState<Request, Response> {
+	status: 'success';
+	request: Request;
+	response: Response;
+	isFetching: false;
+}
+
+interface  StaleQueryState<Request, Response> {
+	status: 'stale';
+	request: Request;
+	response: Response;
+	newRequest: Request;
+	isFetching: true;
+}
+
+interface  ErrorQueryState<Request, Error> 
+	status: 'error';
+	request: Request;
+	error: Error;
+	isFetching: false;
+}
+
+type  QueryState<Request, Response, Error> = IdleQueryState | LoadingQueryState<Request> | SuccessQueryState<Request, Response> | StaleQueryState<Request, Response> | ErrorQueryState<Request, Error>;
 ```

@@ -8,7 +8,7 @@ import { BrowserSearchContext } from '../provider';
 
 export type ResponsePayload<FieldValue> = FieldValue[];
 
-export interface IdleState extends GenericQueryState.IdleState {
+export interface IdleState extends GenericQueryState.IdleQueryState {
 }
 
 export interface LoadingQueryState extends GenericQueryState.LoadingQueryState<GetIndexValuesRequest>  {

@@ -1,23 +1,23 @@
-export interface IdleState {
-  status: 'idle',
+export interface IdleQueryState {
+  status: 'idle';
   isFetching: false;
 }
 
 export interface LoadingQueryState<Request> {
-  status: 'loading',
+  status: 'loading';
   request: Request;
   isFetching: true;
 }
 
 export interface SuccessQueryState<Request, Response> {
-  status: 'success',
+  status: 'success';
   request: Request;
   response: Response;
   isFetching: false;
 }
 
 export interface StaleQueryState<Request, Response> {
-  status: 'stale',
+  status: 'stale';
   request: Request;
   response: Response;
   newRequest: Request;
@@ -25,11 +25,10 @@ export interface StaleQueryState<Request, Response> {
 }
 
 export interface ErrorQueryState<Request, Error> {
-  status: 'error',
+  status: 'error';
   request: Request;
   error: Error;
   isFetching: false;
 }
 
-export type QueryState<Request, Response, Error> = IdleState | LoadingQueryState<Request> | SuccessQueryState<Request, Response> | StaleQueryState<Request, Response> | ErrorQueryState<Request, Error>;
-export type MutationQueryState<Request, Response, Error> = IdleState | LoadingQueryState<Request> | SuccessQueryState<Request, Response> | ErrorQueryState<Request, Error>;
+export type QueryState<Request, Response, Error> = IdleQueryState | LoadingQueryState<Request> | SuccessQueryState<Request, Response> | StaleQueryState<Request, Response> | ErrorQueryState<Request, Error>;

@@ -7,7 +7,7 @@ import * as GenericQueryState from '../queryState';
 import { BrowserSearchContext } from '../provider';
 
 export type ResponsePayload = null;
-export interface IdleState extends GenericQueryState.IdleState {
+export interface IdleState extends GenericQueryState.IdleQueryState {
 }
 
 export interface LoadingQueryState extends GenericQueryState.LoadingQueryState<DeleteStoreRequest>  {
